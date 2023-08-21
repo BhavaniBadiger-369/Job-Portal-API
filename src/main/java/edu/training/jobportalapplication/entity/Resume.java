@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -14,6 +15,7 @@ import javax.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+
 public class Resume {
 	
 	@Id
@@ -31,7 +33,8 @@ public class Resume {
     @JsonIgnore
     private Applicant applicant;
     
-   @ManyToMany(cascade = CascadeType.ALL)
+   @ManyToMany
+   @JoinTable
     private List<Skill> skills;
     
     @OneToMany(cascade = CascadeType.ALL)

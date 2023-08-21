@@ -1,3 +1,4 @@
+
 package edu.training.jobportalapplication.dao;
 
 import java.util.Optional;
@@ -22,6 +23,7 @@ public class EmployerDao {
 	}
 
 	public Employer getEmployerById(long employerId) {
+		
 	Optional<Employer> optional = employerRepo.findById(employerId);
 	
 	if(optional.isEmpty()) {
@@ -30,4 +32,24 @@ public class EmployerDao {
 		return optional.get();
 	}
 	}
+	
+	public Employer updateEmployer(long employerId, Employer employer) {
+	Optional<Employer> optional = employerRepo.findById(employerId);
+	
+	if(optional.isEmpty()) {
+		return null;
+	}else {
+		employer.setEmployerId(employerId);
+	return	employerRepo.save(employer);
+	}
+		
+	}
+	
+	public void deleteEmployer(Employer employer) {
+		employerRepo.delete(employer);
+	}
+	
+	
+	
+	
 }

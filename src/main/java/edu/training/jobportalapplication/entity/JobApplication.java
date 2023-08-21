@@ -1,3 +1,4 @@
+
 package edu.training.jobportalapplication.entity;
 
 import java.time.LocalDateTime;

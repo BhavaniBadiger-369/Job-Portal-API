@@ -20,8 +20,8 @@ public class SkillController {
 	private SkillService skillService;
 	
 	@PostMapping
-	public ResponseEntity<ResponseStructure<Resume>>saveSkills(long applicantId, @RequestParam String[] skills){
-		return skillService.saveSkill(applicantId, skills);
+	public ResponseEntity<ResponseStructure<Resume>>saveSkillsToApplicant(long applicantId, @RequestParam String[] skills){
+		return skillService.saveSkillToApplicant(applicantId, skills);
 		
 	}
 }

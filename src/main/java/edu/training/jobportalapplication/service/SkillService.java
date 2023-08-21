@@ -1,5 +1,7 @@
 package edu.training.jobportalapplication.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,55 +19,60 @@ import edu.training.jobportalapplication.util.ResponseStructure;
 
 @Service
 public class SkillService {
-	
+
 	@Autowired
 	private SkillDao skillDao;
-	
+
 	@Autowired
 	private ApplicantDao applicantDao;
-	
+
 	@Autowired
 	private ResumeDao resumeDao;
-	
-	
-	public ResponseEntity<ResponseStructure<Resume>> saveSkill(long applicantId, String[] skills){
-	Applicant applicant =	applicantDao.getApplicantById(applicantId);
-	if(applicant!=null) {
-      Resume resume = applicant.getResume();
-if(resume!=null) {
-	
-	for(String skill : skills) {
-	 Skill existingSkill =	skillDao.getSkillByName(skill);
-	 if(existingSkill!=null) {
-		 resume.getSkills().add(existingSkill);
-	 }else {
-		 Skill newSkill = new Skill();
-		 newSkill.setSkillName(skill);
-		 resume.getSkills().add(newSkill);
-	 }
+
+	public ResponseEntity<ResponseStructure<Resume>> saveSkillToApplicant(long applicantId, String[] skills) {
+		Applicant applicant = applicantDao.getApplicantById(applicantId);
+		if (applicant != null) {
+			Resume resume = applicant.getResume();
+			if (resume != null) {
+
+				for (String skill : skills) {
+					Skill existingSkill = skillDao.getSkillByName(skill);
+					List<Skill> exskills = resume.getSkills();
+
+					if (existingSkill != null) {
+
+						if (!resume.getSkills().contains(existingSkill)) {
+							exskills.add(existingSkill);
+
+						}
+					} else {
+						Skill newSkill = new Skill();
+						newSkill.setSkillName(skill);
+						resume.getSkills().add(newSkill);
+						exskills.add(newSkill);
+					}
+				}
+
+				resume = resumeDao.saveResume(resume);
+
+				ResponseStructure<Resume> responseStructure = new ResponseStructure<>();
+				responseStructure.setStatusCode(HttpStatus.CREATED.value());
+				responseStructure.setMessage("Resume Added successfully");
+				responseStructure.setData(resume);
+				return new ResponseEntity<ResponseStructure<Resume>>(responseStructure, HttpStatus.CREATED);
+			} else {
+
+			}
+			throw new ResumeNotFoundByIdException("Failed to add skills! ");
+
+		} else {
+
+			throw new ApplicantNotFoundByIdException("Failed to add Resume!");
+		}
+
 	}
-	
-
-	 resume =resumeDao.saveResume(resume);
-	
-	ResponseStructure<Resume>  responseStructure = new ResponseStructure<>();
-		responseStructure.setStatusCode(HttpStatus.CREATED.value());
-		responseStructure.setMessage("Resume Added successfully");
-		responseStructure.setData(resume);
-		return new ResponseEntity<ResponseStructure<Resume>>(responseStructure, HttpStatus.CREATED);
-}else {
-	
-}
-	throw new ResumeNotFoundByIdException("Failed to add skills! ");
-	
-}else {
-	
-	throw new ApplicantNotFoundByIdException("Failed to add Resume!");
-}
-	
-}
-	
-}
 
 	
-
+	
+	
+}
